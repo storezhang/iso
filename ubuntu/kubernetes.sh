@@ -32,4 +32,13 @@ kubernetes() {
     log DEBUG "下载镜像文件" "filename=${FILENAME}, url=${URL}"
     wget --output-document="${FILENAME}" "${URL}"
   fi
+
+  TARGET=$(basename "${FILENAME}" .iso)
+  if [ ! -f "${TARGET}" ]; then
+    log WARN "镜像挂载点不存在，创建挂载点" "target=${TARGET}"
+    mkdir -p "${TARGET}"
+  fi
+
+  log INFO 挂载系统镜像 "filename=${FILENAME}, target=${TARGET}"
+  sudo mount -o loop "${FILENAME}" "${TARGET}"
 }
