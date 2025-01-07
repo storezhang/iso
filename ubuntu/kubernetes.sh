@@ -36,9 +36,9 @@ kubernetes() {
   TARGET=$(basename "${FILENAME}" .iso)
   if [ ! -f "${TARGET}" ]; then
     log WARN "镜像挂载点不存在，创建挂载点" "target=${TARGET}"
-    mkdir -p "${TARGET}"
+    mkdir --parents "${TARGET}"
   fi
 
   log INFO 挂载系统镜像 "filename=${FILENAME}, target=${TARGET}"
-  sudo mount -o loop "${FILENAME}" "${TARGET}"
+  sudo mount --options loop "${FILENAME}" "${TARGET}"
 }
