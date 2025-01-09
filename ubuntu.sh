@@ -2,28 +2,37 @@
 
 VERSION=24.10
 ARCH=amd64
-WORKSPACE=
 TYPE=kubernetes
 
 # 嵌入日志
 source core/log.sh
 
-options=$(getopt -l "version:arch:type:workspace" -o "v:a:t:w:" -a -- "$@")
-eval set -- "$options"
-
+SHORTS="v:a:t:w:u:p:r:"
+LONGS="version:arch:type:workspace:username:password:root-password:rp:"
+ARGS=$(getopt --longoptions ${LONGS} --options ${SHORTS} --alternative -- "$@")
+eval set -- "$ARGS"
 while true; do
   case "$1" in
     -v|--version)
-      VERSION=$OPTARG
+      VERSION=${2#*=}
       ;;
     -a|--arch)
-      ARCH=$OPTARG
+      ARCH=${2#*=}
       ;;
     -w|--workspace)
-      WORKSPACE=$OPTARG
+      WORKSPACE=${2#*=}
       ;;
     -t|--type)
-      TYPE=$OPTARG
+      TYPE=${2#*=}
+      ;;
+    -u|--username)
+      USERNAME=${2#*=}
+      ;;
+    -p|--password)
+      PASSWORD=${2#*=}
+      ;;
+    -r|--rp|--root-password)
+      ROOT_PASSWORD=${2#*=}
       ;;
     --)
       shift
@@ -32,12 +41,12 @@ while true; do
 shift
 done
 
-log INFO "安装镜像定制软件"
+log INFO "开始镜像定制"
 case "${TYPE}" in
   kubernetes)
     log INFO "开始定制Kubernetes镜像"
     source ubuntu/kubernetes.sh
-    kubernetes "${VERSION}" "${ARCH}" "${WORKSPACE}"
+    kubernetes "${VERSION}" "${ARCH}" "${WORKSPACE}" "${ROOT_PASSWORD}" "${USERNAME}" "${PASSWORD}"
     ;;
   --)
     ;;
