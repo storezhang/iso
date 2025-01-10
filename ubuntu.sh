@@ -34,6 +34,9 @@ while true; do
     -r|--rp|--root-password)
       ROOT_PASSWORD=${2#*=}
       ;;
+    -c|--cleanup)
+      CLEANUP=${2#*=}
+      ;;
     --)
       shift
       break;;
@@ -46,7 +49,7 @@ case "${TYPE}" in
   kubernetes)
     log INFO "开始定制Kubernetes镜像"
     source ubuntu/kubernetes.sh
-    kubernetes "${VERSION}" "${ARCH}" "${WORKSPACE}" "${ROOT_PASSWORD}" "${USERNAME}" "${PASSWORD}"
+    kubernetes "${VERSION}" "${ARCH}" "${WORKSPACE}" "${ROOT_PASSWORD}" "${USERNAME}" "${PASSWORD}" "${CLEANUP}"
     ;;
   --)
     ;;

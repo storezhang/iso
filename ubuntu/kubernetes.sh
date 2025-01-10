@@ -6,14 +6,26 @@ source core/log.sh
 source core/chroot.sh
 # 嵌入安装应用
 source ubuntu/install.sh
+# 嵌入安装应用
+source ubuntu/uninstall.sh
+
+_install() {
+    log INFO 安装镜像定制软件
+    install squashfs-tools
+    install genisoimage
+    install isolinux
+    install xorriso
+    install debootstrap
+
+    trap 'uninstall debootstrap' EXIT
+    trap 'uninstall debootstrap' EXIT
+    trap 'uninstall debootstrap' EXIT
+    trap 'uninstall debootstrap' EXIT
+    trap 'uninstall debootstrap' EXIT
+}
 
 kubernetes() {
-  log INFO 安装镜像定制软件
-  install squashfs-tools
-  install genisoimage
-  install isolinux
-  install xorriso
-  install debootstrap
+  _install
 
   VERSION=${1:-24.10}
   ARCH=${2:-amd64}
