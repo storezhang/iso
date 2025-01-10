@@ -9,7 +9,7 @@ source ubuntu/install.sh
 # 嵌入安装应用
 source ubuntu/uninstall.sh
 
-_install() {
+setup() {
     log INFO 安装镜像定制软件
     install squashfs-tools
     install genisoimage
@@ -25,7 +25,7 @@ _install() {
 }
 
 kubernetes() {
-  _install
+  setup # 准备环境
 
   VERSION=${1:-24.10}
   ARCH=${2:-amd64}
