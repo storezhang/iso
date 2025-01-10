@@ -4,12 +4,13 @@
 source core/log.sh
 # 嵌入定制命令
 source core/chroot.sh
-# 嵌入安装应用
-source ubuntu/install.sh
-# 嵌入安装应用
-source ubuntu/uninstall.sh
 
 setup() {
+    # 嵌入安装应用
+    source ubuntu/install.sh
+    # 嵌入安装应用
+    source ubuntu/uninstall.sh
+
     log INFO 安装镜像定制软件
     install squashfs-tools
     install genisoimage

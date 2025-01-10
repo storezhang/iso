@@ -4,11 +4,11 @@
 source core/log.sh
 
 customize() {
-  DIRECTORY=$1
-  NAME=$2
-  COMMAND=${*:2+1}
+    DIRECTORY=$1
+    NAME=$2
+    COMMANDS=${*:2+1}
 
-  log DEBUG 开始执行定制命令 "name=${NAME}, command=${COMMAND}"
-  sudo chroot "${DIRECTORY}" ${COMMAND} || exit 1
-  log INFO 定制命令成功 "name=${NAME}, command=${COMMAND}"
+    log DEBUG 开始执行定制命令 "name=${NAME}, commands=${COMMANDS}"
+    sudo chroot "${DIRECTORY}" "$(for COMMAND in "${COMMANDS[@]}"; do ${COMMAND}; done)" || exit 1
+    log INFO 定制命令成功 "name=${NAME}, commands=${COMMANDS}"
 }
