@@ -15,28 +15,37 @@ before() {
     trap 'uninstall 移除镜像定制软件 squashfs-tools genisoimage isolinux xorriso debootstrap' EXIT
 }
 
-kubernetes() {
-  before # 准备执行环境
+check() {
+    workspace=$1
 
-  version=${1:-24.10}
-  arch=${2:-amd64}
-  workspace="${3:-kubernetes}"
+    log INFO 检查工作区目录是否存在
+    if [ ! -d "${workspace}" ]; then
+        log INFO 创建工作区 "directory=${workspace}"
+        mkdir --parents "${workspace}"
+    fi
+}
+
+prepare() {
+
+}
+
+kubernetes() {
+    before # 准备执行环境
+
+    workspace="${3:-kubernetes}"
+    check ${workspace}
+
+    basedir="${workspace}/ubuntu-${version}-${arch}"
+
+    version=${1:-24.10}
+    arch=${2:-amd64}
 
   root_password=${4}
   username=${5:-kubernetes}
   password=${6}
 
-  log INFO 检查工作区目录是否存在
-  if [ ! -d "${workspace}" ]; then
-    log INFO 创建工作区 "directory=${workspace}"
-    mkdir --parents "${workspace}"
-  fi
-
-  log INFO 进入工作区 "directory=${workspace}"
-  cd "${workspace}" || exit 1
 
 
-  basedir="ubuntu-${version}-${arch}"
   packages="bash"
   packages="${packages},locales"
 
