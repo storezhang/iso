@@ -11,18 +11,8 @@ setup() {
     # 嵌入安装应用
     source ubuntu/uninstall.sh
 
-    log INFO 安装镜像定制软件
-    install squashfs-tools
-    install genisoimage
-    install isolinux
-    install xorriso
-    install debootstrap
-
-    trap 'uninstall debootstrap' EXIT
-    trap 'uninstall debootstrap' EXIT
-    trap 'uninstall debootstrap' EXIT
-    trap 'uninstall debootstrap' EXIT
-    trap 'uninstall debootstrap' EXIT
+    install 安装镜像定制软件 squashfs-tools genisoimage isolinux xorriso debootstrap
+    trap 'uninstall 移除镜像定制软件 squashfs-tools genisoimage isolinux xorriso debootstrap' EXIT
 }
 
 kubernetes() {
