@@ -1,41 +1,41 @@
 #!/usr/bin/sudo /bin/bash
 
-VERSION=24.10
-ARCH=amd64
-TYPE=kubernetes
+version=24.10
+arch=amd64
+type=kubernetes
 
 # 嵌入日志
 source core/log.sh
 
-SHORTS="v:a:t:w:u:p:r:"
-LONGS="version:arch:type:workspace:username:password:root-password:rp:"
-ARGS=$(getopt --longoptions ${LONGS} --options ${SHORTS} --alternative -- "$@")
-eval set -- "$ARGS"
+shorts="v:a:t:w:u:p:r:"
+longs="version:arch:type:workspace:username:password:root-password-password:rp:"
+args=$(getopt --longoptions ${longs} --options ${shorts} --alternative -- "$@")
+eval set -- "$args"
 while true; do
   case "$1" in
     -v|--version)
-      VERSION=${2#*=}
+      version=${2#*=}
       ;;
     -a|--arch)
-      ARCH=${2#*=}
+      arch=${2#*=}
       ;;
     -w|--workspace)
-      WORKSPACE=${2#*=}
+      workspace=${2#*=}
       ;;
     -t|--type)
-      TYPE=${2#*=}
+      type=${2#*=}
       ;;
     -u|--username)
-      USERNAME=${2#*=}
+      username=${2#*=}
       ;;
     -p|--password)
-      PASSWORD=${2#*=}
+      password=${2#*=}
       ;;
-    -r|--rp|--root-password)
-      ROOT_PASSWORD=${2#*=}
+    -r|--rp|--root-password-password)
+      root_password=${2#*=}
       ;;
     -c|--cleanup)
-      CLEANUP=${2#*=}
+      cleanup=${2#*=}
       ;;
     --)
       shift
@@ -45,11 +45,11 @@ shift
 done
 
 log INFO "开始镜像定制"
-case "${TYPE}" in
+case "${type}" in
   kubernetes)
     log INFO "开始定制Kubernetes镜像"
     source ubuntu/kubernetes.sh
-    kubernetes "${VERSION}" "${ARCH}" "${WORKSPACE}" "${ROOT_PASSWORD}" "${USERNAME}" "${PASSWORD}" "${CLEANUP}"
+    kubernetes "${version}" "${arch}" "${workspace}" "${root_password}" "${username}" "${password}" "${cleanup}"
     ;;
   --)
     ;;
