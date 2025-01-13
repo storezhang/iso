@@ -14,7 +14,7 @@ codename() {
         fi
 
         if [[ "${line}" == *"Version: ${version}"* ]]; then
-            echo -n "${dist}" # 不输出换行符，不然会干扰读取结果
+            echo -n "${dist}" # !不输出换行符，不然会干扰读取结果
             break
         fi
     done <<< "${content}"

@@ -7,8 +7,8 @@ type=kubernetes
 # 嵌入日志
 source core/log.sh
 
-shorts="v:a:t:w:u:p:r:"
-longs="version:arch:type:workspace:username:password:root-password-password:rp:"
+shorts="v:a:t:w:u:p:r:m:"
+longs="version:arch:type:workspace:username:password:root-password-password:rp:mirror:"
 args=$(getopt --longoptions ${longs} --options ${shorts} --alternative -- "$@")
 eval set -- "$args"
 while true; do
@@ -34,6 +34,9 @@ while true; do
     -r|--rp|--root-password-password)
       root_password=${2#*=}
       ;;
+    -m|--mirror)
+        mirror=${2#*=}
+      ;;
     -c|--cleanup)
       cleanup=${2#*=}
       ;;
@@ -49,7 +52,7 @@ case "${type}" in
   kubernetes)
     log INFO "开始定制Kubernetes镜像"
     source ubuntu/kubernetes.sh
-    kubernetes "${arch}" "${version}" "${workspace}" "${root_password}" "${username}" "${password}" "${cleanup}"
+    kubernetes "${arch}" "${version}" "${workspace}" "${root_password}" "${username}" "${password}" "${mirror}" "${cleanup}"
     ;;
   --)
     ;;

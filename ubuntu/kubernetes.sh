@@ -5,7 +5,7 @@ source core/log.sh
 # 嵌入定制命令
 source core/chroot.sh
 
-before() {
+before() { # 执行前的步骤
     # 嵌入安装应用
     source ubuntu/install.sh
     # 嵌入安装应用
@@ -15,7 +15,7 @@ before() {
     trap 'uninstall 移除镜像定制软件 squashfs-tools genisoimage isolinux xorriso debootstrap' EXIT
 }
 
-check() {
+check() { # 检查执行条件是否满足
     workspace=$1
 
     log INFO 检查工作区目录是否存在
@@ -25,7 +25,7 @@ check() {
     fi
 }
 
-auth() {
+authentication() { # 处理认证信息
     root_password=$1
     username=$2
     password=$3
@@ -46,17 +46,18 @@ auth() {
     fi
 }
 
-prepare() {
+prepare() { # 准备执行环境
     source ubuntu/codename.sh
 
     arch=$1
     version=$2
     basedir=$3
     packages=$4
+    mirror=${5:-https://mirrors.ustc.edu.cn/ubuntu}
 
     name=$(codename "${version}")
     log INFO 准备文件系统 "filepath=${basedir}, arch=${arch}, version=${version}, name=${name}"
-    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" https://mirrors.ustc.edu.cn/ubuntu
+    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" "${mirror}"
 
     dev="${basedir}/dev"
     log INFO 开始挂载文件系统 "filepath=${dev}"
@@ -76,7 +77,7 @@ prepare() {
     trap 'sudo unmount ${dev} ${proc} ${sys}' EXIT
 }
 
-execute() {
+execute() { # 定制系统
     basedir=$1
 
     log INFO 开始定制系统 "root=${basedir}"
@@ -88,7 +89,7 @@ execute() {
     customize "${basedir}" 开启ROOT账号登录权限 echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root
 }
 
-kubernetes() {
+kubernetes() { # 入口
     before # 准备执行环境
 
     workspace="${3:-kubernetes}"
@@ -98,13 +99,14 @@ kubernetes() {
     arch=${1:-amd64}
     version=${2:-24.10}
     basedir="${workspace}/ubuntu-${arch}-${version}"
-    prepare "${arch}" "${version}" "${basedir}" "bash,locales"
+    mirror=$7
+    prepare "${arch}" "${version}" "${basedir}" "bash,locales" "${mirror}"
 
     # 处理用户
     root_password=${4}
     username=${5:-kubernetes}
     password=${6}
-    auth "${basedir}" "${root_password}" "${username}" "${password}"
+    authentication "${basedir}" "${root_password}" "${username}" "${password}"
 
     # 定制系统
     execute "${basedir}"
