@@ -47,14 +47,16 @@ auth() {
 }
 
 prepare() {
+    source ubuntu/codename.sh
+
     arch=$1
     version=$2
     basedir=$3
     packages=$4
 
-    codename=$(curl -s https://changelogs.ubuntu.com/meta-release | grep Name: | tail -n1)
-    log INFO 准备文件系统 "filepath=${basedir}"
-    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${codename}" "${basedir}" https://mirrors.ustc.edu.cn/ubuntu
+    name=$(codename "${version}")
+    log INFO 准备文件系统 "filepath=${basedir}, arch=${arch}, version=${version}, name=${name}"
+    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" https://mirrors.ustc.edu.cn/ubuntu
 
     dev="${basedir}/dev"
     log INFO 开始挂载文件系统 "filepath=${dev}"
@@ -75,6 +77,8 @@ prepare() {
 }
 
 execute() {
+    basedir=$1
+
     log INFO 开始定制系统 "root=${basedir}"
     customize "${basedir}" 更新系统 apt update
     customize "${basedir}" 升级系统 apt upgrade
@@ -90,13 +94,18 @@ kubernetes() {
     workspace="${3:-kubernetes}"
     check "${workspace}"
 
-    arch=${2:-amd64}
-    version=${1:-24.10}
-    basedir="${workspace}/ubuntu-${version}-${arch}"
+    # 准备环境
+    arch=${1:-amd64}
+    version=${2:-24.10}
+    basedir="${workspace}/ubuntu-${arch}-${version}"
     prepare "${arch}" "${version}" "${basedir}" "bash,locales"
 
+    # 处理用户
     root_password=${4}
     username=${5:-kubernetes}
     password=${6}
-    auth "${workspace}" "${root_password}" "${username}" "${password}"
+    auth "${basedir}" "${root_password}" "${username}" "${password}"
+
+    # 定制系统
+    execute "${basedir}"
 }

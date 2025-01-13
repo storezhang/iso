@@ -5,7 +5,7 @@ source core/log.sh
 
 install() {
     message=$1
-    applications=${*:2+1}
+    applications=${*:1+1}
 
     installs=()
     for application in ${applications}; do

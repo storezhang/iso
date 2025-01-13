@@ -1,6 +1,6 @@
 #!/usr/bin/sudo /bin/bash
 
-version=24.10
+version=22.10
 arch=amd64
 type=kubernetes
 
@@ -49,7 +49,7 @@ case "${type}" in
   kubernetes)
     log INFO "开始定制Kubernetes镜像"
     source ubuntu/kubernetes.sh
-    kubernetes "${version}" "${arch}" "${workspace}" "${root_password}" "${username}" "${password}" "${cleanup}"
+    kubernetes "${arch}" "${version}" "${workspace}" "${root_password}" "${username}" "${password}" "${cleanup}"
     ;;
   --)
     ;;
