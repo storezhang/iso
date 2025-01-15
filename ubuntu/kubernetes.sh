@@ -53,11 +53,11 @@ prepare() { # 准备执行环境
     version=$2
     basedir=$3
     packages=$4
-    mirror=${5:-https://mirrors.ustc.edu.cn/ubuntu}
+    mirror=${5:-https://mirrors.aliyun.com/ubuntu}
 
     name=$(codename "${version}")
     log INFO 准备文件系统 "filepath=${basedir}, arch=${arch}, version=${version}, name=${name}"
-    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" "${mirror}"
+    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" "${mirror}" || exit 1
 
     dev="${basedir}/dev"
     log INFO 开始挂载文件系统 "filepath=${dev}"

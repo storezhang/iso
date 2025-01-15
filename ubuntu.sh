@@ -1,6 +1,6 @@
 #!/usr/bin/sudo /bin/bash
 
-version=22.10
+version="22.04.5 LTS"
 arch=amd64
 type=kubernetes
 
