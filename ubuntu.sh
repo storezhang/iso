@@ -3,6 +3,7 @@
 version="22.04.5 LTS"
 arch=amd64
 type=kubernetes
+cleanup=false
 
 # 嵌入日志
 source core/log.sh
