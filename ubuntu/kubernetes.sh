@@ -39,8 +39,8 @@ authentication() { # 处理认证信息
     if [[ -n ${username} ]]; then # 创建用户
         gid=1001
         uid=1001
-        customize 创建用户组 "${basedir}" sh -c "groupadd --gid=${uid} --system ${username}"
-        customize 创建用户 "${basedir}" sh -c "useradd --uid ${uid} --gid ${gid} --system ${username} --home-dir /home/${username}"
+        customize 创建组 "${basedir}" sudo groupadd --system --gid=${gid} "${username}"
+        customize 创建用户 "${basedir}" sudo useradd --system --uid=${uid} --gid=${gid} "${username}" --home-dir="/home/${username}"
     fi
 
     if [[ -n ${password} ]]; then # 配置密码
@@ -74,7 +74,7 @@ prepare() { # 准备执行环境
         trap 'sudo rm -rf ${basedir}' EXIT
     fi
 
-    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" "${mirror}" || exit 1
+    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" "${mirror}"
 
     # attach 设备 "/dev" "${basedir}/dev"
     # attach 进程 "/proc" "${basedir}/proc"
