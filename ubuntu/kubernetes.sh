@@ -90,7 +90,7 @@ execute() { # 定制系统
     chroot 使用Bash环境 "${basedir}" chsh --shell /usr/bin/bash
     chroot 设置时间为重庆 "${basedir}" apt install tzdata -y && cp /usr/share/zoneinfo/Asia/Chongqing /etc/localtime
     chroot 安装SSH服务器并 "${basedir}" apt install openssh-server -y
-    chroot 开启ROOT账号登录权限 "${basedir}" echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root
+    chroot 开启ROOT账号登录权限 "${basedir}" sudo echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root
 }
 
 kubernetes() { # 入口
