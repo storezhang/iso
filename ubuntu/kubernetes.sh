@@ -33,7 +33,7 @@ authentication() { # 处理认证信息
     cleanup=$5
 
     if [[ -n ${root_password} ]]; then # 配置根账号密码
-        chroot "${basedir}" 设置根用户密码 echo root:"${root_password}" | chpasswd
+        chroot "${basedir}" 设置根用户密码 "echo root:${root_password} | chpasswd"
     fi
 
     if [[ -n ${username} ]]; then # 创建用户
@@ -41,10 +41,11 @@ authentication() { # 处理认证信息
         uid=1001
         chroot 创建组 "${basedir}" groupadd --system --gid=${gid} "${username}"
         chroot 创建用户 "${basedir}" useradd --system --uid=${uid} --gid=${gid} "${username}" --home-dir="/home/${username}"
+        chroot 添加用户管理员权限 "${basedir}" adduser "${username}" sudo
     fi
 
     if [[ -n ${password} ]]; then # 配置密码
-        chroot 设置用户密码 "${basedir}" echo "${username}:${password}" | chpasswd
+        chroot 设置用户密码 "${basedir}" "echo ${username}:${password} | chpasswd"
     fi
 }
 
@@ -88,9 +89,10 @@ execute() { # 定制系统
     chroot 更新系统 "${basedir}" apt update -y
     chroot 升级系统 "${basedir}" apt upgrade -y
     chroot 使用Bash环境 "${basedir}" chsh --shell /usr/bin/bash
-    chroot 设置时间为重庆 "${basedir}" apt install tzdata -y && cp /usr/share/zoneinfo/Asia/Chongqing /etc/localtime
-    chroot 安装SSH服务器并 "${basedir}" apt install openssh-server -y
-    chroot 开启ROOT账号登录权限 "${basedir}" sudo echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root
+    chroot 安装时间地区信息 "${basedir}" apt install -y tzdata
+    chroot 将时区设置为重庆 "${basedir}" cp /usr/share/zoneinfo/Asia/Chongqing /etc/localtime
+    chroot SSH服务器 "${basedir}" apt install -y openssh-server
+    chroot 开启ROOT账号登录SSH权限 "${basedir}" "echo PermitRootLogin yes > /etc/ssh/sshd_config.d/login"
     log INFO 定制系统完成 "basedir=${basedir}"
 }
 
