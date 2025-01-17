@@ -84,13 +84,14 @@ prepare() { # 准备执行环境
 execute() { # 定制系统
     basedir=$1
 
-    log INFO 开始定制系统 "root=${basedir}"
+    log INFO 开始定制系统 "basedir=${basedir}"
     chroot 更新系统 "${basedir}" apt update -y
     chroot 升级系统 "${basedir}" apt upgrade -y
     chroot 使用Bash环境 "${basedir}" chsh --shell /usr/bin/bash
     chroot 设置时间为重庆 "${basedir}" apt install tzdata -y && cp /usr/share/zoneinfo/Asia/Chongqing /etc/localtime
     chroot 安装SSH服务器并 "${basedir}" apt install openssh-server -y
     chroot 开启ROOT账号登录权限 "${basedir}" sudo echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root
+    log INFO 定制系统完成 "basedir=${basedir}"
 }
 
 kubernetes() { # 入口
