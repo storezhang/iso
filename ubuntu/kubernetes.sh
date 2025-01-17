@@ -33,18 +33,18 @@ authentication() { # 处理认证信息
     cleanup=$5
 
     if [[ -n ${root_password} ]]; then # 配置根账号密码
-        customize "${basedir}" 设置根用户密码 sh -c "echo root:${root_password} | chpasswd"
+        chroot "${basedir}" 设置根用户密码 echo root:"${root_password}" | chpasswd
     fi
 
     if [[ -n ${username} ]]; then # 创建用户
         gid=1001
         uid=1001
-        customize 创建组 "${basedir}" sudo groupadd --system --gid=${gid} "${username}"
-        customize 创建用户 "${basedir}" sudo useradd --system --uid=${uid} --gid=${gid} "${username}" --home-dir="/home/${username}"
+        chroot 创建组 "${basedir}" groupadd --system --gid=${gid} "${username}"
+        chroot 创建用户 "${basedir}" useradd --system --uid=${uid} --gid=${gid} "${username}" --home-dir="/home/${username}"
     fi
 
     if [[ -n ${password} ]]; then # 配置密码
-        customize 设置用户密码 "${basedir}" sh -c "echo ${username}:${password} | chpasswd"
+        chroot 设置用户密码 "${basedir}" echo "${username}:${password}" | chpasswd
     fi
 }
 
@@ -85,12 +85,12 @@ execute() { # 定制系统
     basedir=$1
 
     log INFO 开始定制系统 "root=${basedir}"
-    customize 更新系统 "${basedir}" apt update
-    customize 升级系统 "${basedir}" apt upgrade
-    customize 使用Bash环境 "${basedir}" chsh --shell /usr/bin/bash
-    customize 设置时间为重庆 "${basedir}" apt install tzdata -y && cp /usr/share/zoneinfo/Asia/Chongqing /etc/localtime
-    customize 安装SSH服务器并 "${basedir}" apt install openssh-server -y
-    customize 开启ROOT账号登录权限 "${basedir}" echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root
+    chroot 更新系统 "${basedir}" apt update -y
+    chroot 升级系统 "${basedir}" apt upgrade -y
+    chroot 使用Bash环境 "${basedir}" chsh --shell /usr/bin/bash
+    chroot 设置时间为重庆 "${basedir}" apt install tzdata -y && cp /usr/share/zoneinfo/Asia/Chongqing /etc/localtime
+    chroot 安装SSH服务器并 "${basedir}" apt install openssh-server -y
+    chroot 开启ROOT账号登录权限 "${basedir}" echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root
 }
 
 kubernetes() { # 入口
