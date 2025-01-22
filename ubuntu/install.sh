@@ -18,6 +18,6 @@ install() {
     done
 
     log DEBUG "开始安装应用" "message=${message}, applications=[${installs[*]}]"
-    sudo apt install -y "$(for INSTALL in "${installs[@]}"; do ${INSTALL}; done)" || exit 1
+    sudo apt install -y "$(for INSTALL in "${installs[@]}"; do ${INSTALL}; done)" > /dev/null 2>&1 || exit 1
     log INFO "开始安装成功" "message=${message}, applications=[${installs[*]}]"
 }

@@ -32,8 +32,12 @@ authentication() { # 处理认证信息
     password=$4
     cleanup=$5
 
+    if [[ -z ${password} ]]; then
+        password=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | head -c 14)
+        log WARN 生成用户密码 "username=${username}, password=${root_password}"
+    fi
     if [[ -n ${root_password} ]]; then # 配置根账号密码
-        chroot "${basedir}" 设置根用户密码 "echo root:${root_password} | chpasswd"
+        chroot 设置根用户密码 "${basedir}" "echo root:${root_password} | chpasswd"
     fi
 
     if [[ -n ${username} ]]; then # 创建用户
@@ -41,6 +45,7 @@ authentication() { # 处理认证信息
         uid=1001
         chroot 创建组 "${basedir}" groupadd --system --gid=${gid} "${username}"
         chroot 创建用户 "${basedir}" useradd --system --uid=${uid} --gid=${gid} "${username}" --home-dir="/home/${username}"
+        chroot 安装权限提升工具 "${basedir}" apt install -y sudo
         chroot 添加用户管理员权限 "${basedir}" adduser "${username}" sudo
     fi
 
@@ -75,7 +80,7 @@ prepare() { # 准备执行环境
         trap 'sudo rm -rf ${basedir}' EXIT
     fi
 
-    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" "${mirror}"
+    sudo debootstrap --arch="${arch}" --include="${packages}" --variant=minbase "${name}" "${basedir}" "${mirror}" > /dev/null 2>&1
 
     # attach 设备 "/dev" "${basedir}/dev"
     # attach 进程 "/proc" "${basedir}/proc"

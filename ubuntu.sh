@@ -49,6 +49,12 @@ while true; do
     shift
 done
 
+
+if [[ -z ${root_password} ]]; then
+    root_password=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | head -c 14)
+    log WARN 生成用户密码 "username=root, password=${root_password}"
+fi
+
 log INFO "开始镜像定制"
 case "${type}" in
     kubernetes)
