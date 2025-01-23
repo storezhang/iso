@@ -5,6 +5,9 @@ source core/log.sh
 
 codename() {
     version=$1
+    version="${version//-/ }" # 中划线替换为空格
+    version="${version//_/ }" # 下划线替换为空格
+    version="${version^^}" # 转换为大写
 
     url="https://changelogs.ubuntu.com/meta-release"
     content=$(curl -s "${url}")
@@ -20,4 +23,5 @@ codename() {
     done <<< "${content}"
 }
 
+# 用于测试
 codename "$@"
