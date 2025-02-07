@@ -9,7 +9,7 @@ cleanup=false
 source core/log.sh
 
 shorts="v:a:t:w:u:p:r:m:"
-longs="version:arch:type:workspace:username:password:root-password-password:rp:mirror:"
+longs="version:arch:type:workspace:username:password:root-password:rp:mirror:"
 args=$(getopt --longoptions ${longs} --options ${shorts} --alternative -- "$@")
 eval set -- "$args"
 while true; do
@@ -33,7 +33,7 @@ while true; do
         -p|--password)
             password=${value}
             ;;
-        -r|--rp|--root-password-password)
+        -r|--rp|--root-password)
             root_password=${value}
             ;;
         -m|--mirror)
